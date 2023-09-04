@@ -1,0 +1,36 @@
+<messageML>
+    <form id="example">
+        <table>
+            <thead>
+                <tr>
+                    <td>Heading-1</td>
+                    <td>Heading-2</td>
+                    <td>Heading-3</td>
+                    <td>Select</td>
+                </tr>
+            </thead>
+            <tbody>
+                {% for i in data %}    
+                <tr>
+                    <td>{{ i[0] }}</td>
+                    <td>{{ i[1] }}</td>
+                    <td>{{ i[2] }}</td>
+                    <td>
+                        <button type="action" name="row-{{ i[0] }}">SELECT</button>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        <div style='display:none;'>
+            <text-field name="current">{{ current }}</text-field>
+            <text-field name="next">{{ next }}</text-field>  
+        </div>
+        {% if current >  0 %}
+        <button type="action" name="previous">Previous {{ current }}</button>
+        {% endif %}
+        {% if next <  length %}
+        <button type="action" name="next">Next {{ length - next }}</button>
+        {% endif %}
+    </form>
+</messageML>
