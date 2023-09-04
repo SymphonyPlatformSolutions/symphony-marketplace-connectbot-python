@@ -2,7 +2,7 @@
 ## Introduction
 The objective of this code sample is to help partners to make their Symphony bot compliant with the requirements of the **Marketplace Connect flow**.
 
-It is based on the Java BDK. If you are not familiar with the Symphony Java BDK, please have a look here: https://github.com/finos/symphony-bdk-java
+It is based on the Python BDK. If you are not familiar with the Symphony Java BDK, please have a look here: https://github.com/finos/symphony-bdk-python
 
 ## Disclaimer
 This code sample is only an example. It is not meant to be directly used in a production environment. 
