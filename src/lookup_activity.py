@@ -15,11 +15,12 @@ class LookupCommandActivity(SlashCommandActivity):
         self.template = Template(open('resources/templates/table.jinja2').read(), autoescape=True)
 
     async def display_lookup_form(self, context: CommandContext):
-        global prev
+        # global prev
         message = data_slicer(0, data, max_list)
-        prev = await self._messages.send_message(context.stream_id, message)
-        print(prev.message_id)
-        return prev
+        self._prev = await self._messages.send_message(context.stream_id, message)
+        print(self._prev.message_id)
+        # await LookupFormReplyActivity.on_activity(self._prev, context)
+        return self._prev
 
 class LookupFormReplyActivity(FormReplyActivity):
     # Sends back the selected value on form submission
@@ -33,7 +34,8 @@ class LookupFormReplyActivity(FormReplyActivity):
             and context.form_values["action"] is not None
     
     async def on_activity(self, context: FormReplyContext):
-        global prev
+        # global prev
+        print(str(self))
         selection = context.form_values.get("action")
         print(selection)
  
@@ -41,13 +43,12 @@ class LookupFormReplyActivity(FormReplyActivity):
             case "next":
                 print("Next set of records")
                 message = data_slicer(int(context.form_values.get("next")), data, max_list)
-                prev = await self._messages.update_message(context.source_event.stream.stream_id, prev.message_id, message)
+                prev = await self._messages.update_message(context.source_event.stream.stream_id, context.source_event.form_message_id, message)
                 
             case "previous":
                 print("Previous set of records")
-                print(prev.message_id)
                 message = data_slicer(int(context.form_values.get("current")) - max_list, data, max_list)
-                prev = await self._messages.update_message(context.source_event.stream.stream_id, prev.message_id, message)
+                prev = await self._messages.update_message(context.source_event.stream.stream_id, context.source_event.form_message_id, message)
 
             case _:
                 print("Record has been selected")
@@ -59,4 +60,3 @@ def data_slicer(index, data, max_list):
     for i in range(index, len(data['body']), max_list):
         message = template.render(data=data['body'][i:i + max_list], current = index, next = index + max_list, length = len(data['body']))
         return message
-
