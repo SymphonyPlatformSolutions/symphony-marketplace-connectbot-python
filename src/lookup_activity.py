@@ -5,8 +5,7 @@ from symphony.bdk.core.service.message.message_service import MessageService
 import json
 
 data = json.load(open('resources/data.json'))   
-prev = None
-max_list = 2
+max_list = 4
 
 class LookupCommandActivity(SlashCommandActivity):
     def __init__(self, messages: MessageService):
@@ -15,11 +14,9 @@ class LookupCommandActivity(SlashCommandActivity):
         self.template = Template(open('resources/templates/table.jinja2').read(), autoescape=True)
 
     async def display_lookup_form(self, context: CommandContext):
-        # global prev
         message = data_slicer(0, data, max_list)
         self._prev = await self._messages.send_message(context.stream_id, message)
         print(self._prev.message_id)
-        # await LookupFormReplyActivity.on_activity(self._prev, context)
         return self._prev
 
 class LookupFormReplyActivity(FormReplyActivity):
@@ -34,8 +31,6 @@ class LookupFormReplyActivity(FormReplyActivity):
             and context.form_values["action"] is not None
     
     async def on_activity(self, context: FormReplyContext):
-        # global prev
-        print(str(self))
         selection = context.form_values.get("action")
         print(selection)
  

@@ -11,9 +11,10 @@ class HelpCommandActivity(SlashCommandActivity):
         super().__init__("/help", True, self.help_command)
 
     async def help_command(self, context: CommandContext):
+        print(context._bot_user_id)
         stream_id = context.stream_id
         template = Template(open('resources/templates/help.jinja2').read(), autoescape=True)
-        await self._messages.send_message(stream_id, template.render())
+        await self._messages.send_message(stream_id, template.render(bot_user_id = context._bot_user_id))
 
 class SalesCommandActivity(SlashCommandActivity):
     def __init__(self, messages: MessageService):
