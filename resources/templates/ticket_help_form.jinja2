@@ -1,0 +1,45 @@
+{% macro context_row(label, value) -%}
+<tr><td style="width:140px;padding:4px 0;color:#1A1A1A;"><b>{{ label }}</b></td><td style="padding:4px 0;color:#1A1A1A;">{{ value }}</td></tr>
+{%- endmacro %}
+<messageML>
+    <form id="rate-control-help">
+        <div style="display:none;">
+            <text-field name="ticket_id">{{ ticket_id }}</text-field>
+        </div>
+        <div style="background:#FFFFFF;border:1px solid #E0E0E0;border-radius:8px;box-shadow:0 2px 8px rgba(0,0,0,0.18);overflow:hidden;max-width:480px;">
+            <table style="border:0px solid transparent;width:100%;">
+                <tr>
+                    <td style="background:#3B1E5F;color:#FFFFFF;padding:10px 14px;"><b>Raise a Support Ticket</b></td>
+                </tr>
+            </table>
+
+            <div style="padding:14px;color:#1A1A1A;">
+                <p>Let us know what you need help with regarding ticket <b>{{ ticket_id }}</b>.</p>
+
+                <select name="topic" label="Topic" data-placeholder="Select a topic..." required="true">
+                    {% for value, label in help_topics %}
+                    <option value="{{ value }}">{{ label }}</option>
+                    {% endfor %}
+                </select>
+
+                <textarea name="details" label="Details" placeholder="Describe the issue you're facing with this ticket..." rows="4"></textarea>
+
+                <hr/>
+                <p><b>Original ticket</b></p>
+                <table style="border:0px solid transparent;width:100%;">
+                    {{ context_row("Trader", trader) }}
+                    {{ context_row("Algo Name", algo_name) }}
+                    {{ context_row("Instrument", instrument) }}
+                    {{ context_row("Entity", entity) }}
+                    {{ context_row("Flow", flow) }}
+                    {{ context_row("Breach reason", reason) }}
+                </table>
+
+                <div style="margin-top:14px;">
+                    <button type="action" name="submit_help">Submit</button>
+                    <button type="action" name="cancel_help" class="secondary">Cancel</button>
+                </div>
+            </div>
+        </div>
+    </form>
+</messageML>

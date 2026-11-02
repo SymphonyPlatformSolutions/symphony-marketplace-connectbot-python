@@ -1,0 +1,33 @@
+<messageML>
+{% if not decision %}<form id="call-approval-form"><div style="display:none;"><text-field name="approval_id">{{ approval_id }}</text-field></div>{% endif %}
+<div class="tempo-ui--background tempo-text-color--normal" style="border:1px solid #8A929E;border-left:5px solid {{ '#E87924' if item.tone == 'warning' else '#8A00C2' }};border-radius:8px;padding:12px;max-width:720px;">
+  <div style="padding:0 0 9px;border-bottom:1px solid #8A929E;">
+    <b>{{ item.agent }}</b> is requesting approval to call <b>{{ item.tool }}</b>
+    <hash tag="{{ item.safety_level }}"/>
+    {% if decision %}<br/><b>{{ decision }}</b>{% endif %}
+  </div>
+  <div class="tempo-text-color--secondary" style="padding:8px 0 6px;font-size:13px;">{{ item.provider }} · {{ item.tool }}</div>
+  <div class="{{ '' if item.tone == 'warning' else 'tempo-ui--background' }}" style="{{ 'background-color:#FFF7ED;color:#7A3B08;' if item.tone == 'warning' else '' }}border-left:3px solid {{ '#E87924' if item.tone == 'warning' else '#8A00C2' }};padding:8px 10px;margin:2px 0 8px;border-radius:4px;">
+    {% if item.tone == 'warning' %}<b style="color:#C76816;">⚠ Impact:</b>{% else %}<b>✦ AI summary:</b>{% endif %}
+    {{ item.summary }}
+  </div>
+  <expandable-card state="collapsed">
+    <header><b>Tool inputs</b></header>
+    <body><code>{{ item.inputs }}</code></body>
+  </expandable-card>
+  {% if not decision %}
+  <div style="padding-top:10px;">
+    <button type="action" name="accept">Accept</button>
+    <button type="action" name="accept_session" class="secondary">Accept for this session</button>
+    {% if item.tone == 'warning' %}
+    <button type="action" name="deny" class="destructive">Deny</button>
+    {% else %}
+    <button type="action" name="deny" class="secondary">Deny</button>
+    {% endif %}
+  </div>
+  {% else %}
+  <div style="padding-top:8px;"><b>Decision recorded:</b> {{ decision }}. This demo does not execute the tool.</div>
+  {% endif %}
+</div>
+{% if not decision %}</form>{% endif %}
+</messageML>

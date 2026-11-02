@@ -1,0 +1,67 @@
+{% macro info_row(label, value) -%}
+<td style="width:50%;padding:4px 0;color:#1A1A1A;"><b>{{ label }}</b> : {{ value }}</td>
+{%- endmacro %}
+<messageML>
+    <form id="rate-control-ticket">
+        <div style="display:none;">
+            <text-field name="ticket_id">{{ ticket_id }}</text-field>
+            {# Symphony requires every form to have at least one action button, even when the
+               ticket is in a terminal state and there's nothing left to actually action. #}
+            {% if expired or resolved_label %}
+            <button type="action" name="noop">noop</button>
+            {% endif %}
+        </div>
+        <div style="background:#FFFFFF;border:1px solid #E0E0E0;border-radius:8px;box-shadow:0 2px 8px rgba(0,0,0,0.18);overflow:hidden;max-width:480px;">
+            <table style="border:0px solid transparent;width:100%;">
+                <tr>
+                    <td style="background:#3B1E5F;color:#FFFFFF;padding:10px 14px;">
+                        <b>Message Rate Control</b> ({% if resolved_label %}Resolved{% elif expired %}Expired{% else %}Response Required{% endif %})
+                    </td>
+                    <td style="background:#3B1E5F;color:#FFFFFF;text-align:right;padding:10px 14px;">
+                        {% if not expired and not resolved_label %}
+                        <button type="action" name="help" class="secondary">Help!</button>
+                        {% endif %}
+                    </td>
+                </tr>
+            </table>
+
+            {% if expired %}
+            <div style="background:#FDE8E8;border-left:4px solid #D93025;padding:10px 14px;color:#7A1616;">
+                ⚠ This ticket has expired - it was not actioned within {{ TICKET_EXPIRY_SECONDS }} seconds.
+            </div>
+            {% elif resolved_label %}
+            <div style="background:#E6F4EA;border-left:4px solid #1E8E3E;padding:10px 14px;color:#154D27;">
+                ✔ Resolved as: <b>{{ resolved_label }}</b>{% if rationale %} - {{ rationale }}{% endif %}
+            </div>
+            {% else %}
+            <div style="background:#E8F0FE;padding:10px 14px;color:#0D3B75;">
+                ℹ Hard Block on order due to: {{ reason }}.<br/>
+                {% if remaining_seconds <= 5 %}
+                <span style="color:#D93025;"><b>Expires in {{ remaining_seconds }}s if not actioned.</b></span>
+                {% else %}
+                <b>Expires in {{ remaining_seconds }}s</b> if not actioned.
+                {% endif %}
+            </div>
+            {% endif %}
+
+            <div style="padding:14px;color:#1A1A1A;">
+                <table style="border:0px solid transparent;width:100%;margin-bottom:8px;">
+                    <tr>{{ info_row("Trader", trader) }}{{ info_row("Algo Name", algo_name) }}</tr>
+                    <tr>{{ info_row("Instrument", instrument) }}<td></td></tr>
+                    <tr>{{ info_row("Entity", entity) }}{{ info_row("Flow", flow) }}</tr>
+                </table>
+
+                {% if not expired and not resolved_label %}
+                <hr/>
+                <text-field name="rationale" label="Rationale" placeholder="Optional"></text-field>
+                <div style="margin-top:10px;">
+                    <button type="action" name="acknowledge">Acknowledge - Investigating</button>
+                    <button type="action" name="not_disorderly">Not Disorderly</button>
+                    <button type="action" name="trading_incident">Trading Incident</button>
+                    <button type="action" name="potential_disorderly" class="destructive">Potential Disorderly</button>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+    </form>
+</messageML>

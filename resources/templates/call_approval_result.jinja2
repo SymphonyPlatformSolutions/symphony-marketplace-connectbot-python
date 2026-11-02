@@ -1,0 +1,39 @@
+<messageML>
+{% if decision == 'Denied' %}
+<div style="width:720px;max-width:100%;">
+<expandable-card state="collapsed">
+  <header>
+    <div style="background-color:#FDECEC;color:#7A1C1C;padding:7px 10px;">
+      ✖ <b>{{ decision }}:</b> {{ item.tool }} <hash tag="{{ item.safety_level }}"/>
+    </div>
+  </header>
+  <body>
+    <div style="background-color:#FDECEC;color:#7A1C1C;padding:8px 10px;">
+      <b>Agent:</b> {{ item.agent }}<br/>
+      <b>Provider:</b> {{ item.provider }}<br/>
+      <b>Summary:</b> {{ item.summary }}<br/>
+      <b>Tool inputs:</b> <code>{{ item.inputs }}</code>
+    </div>
+  </body>
+</expandable-card>
+</div>
+{% else %}
+<div style="width:720px;max-width:100%;">
+<expandable-card state="collapsed">
+  <header>
+    <div style="background-color:#E6F4EA;color:#155724;padding:7px 10px;">
+      ✔ <b>{{ decision }}:</b> {{ item.tool }} <hash tag="{{ item.safety_level }}"/>
+    </div>
+  </header>
+  <body>
+    <div style="background-color:#E6F4EA;color:#155724;padding:8px 10px;">
+      <b>Agent:</b> {{ item.agent }}<br/>
+      <b>Provider:</b> {{ item.provider }}<br/>
+      <b>Summary:</b> {{ item.summary }}<br/>
+      <b>Tool inputs:</b> <code>{{ item.inputs }}</code>
+    </div>
+  </body>
+</expandable-card>
+</div>
+{% endif %}
+</messageML>

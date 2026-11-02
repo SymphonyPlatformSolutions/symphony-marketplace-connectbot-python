@@ -11,7 +11,14 @@ from symphony.bdk.gen.agent_model.v4_message_sent import V4MessageSent
 from symphony.bdk.core.service.connection.model.connection_status import ConnectionStatus
 from .connections_listener import ConnectionsListener
 from .activities import HelpCommandActivity, SalesCommandActivity, SupportCommandActivity
+from .call_approval_activity import (
+    CallApprovalCommandActivity,
+    CallApprovalFormReplyActivity,
+    CallApprovalRegistry,
+)
 from .lookup_activity import LookupCommandActivity, LookupFormReplyActivity
+from .ticket_activity import TicketCommandActivity, TicketFormReplyActivity, TicketHelpFormReplyActivity
+from .ticket_service import TicketRegistry
 
 # Configure logging
 current_dir = Path(__file__).parent.parent
@@ -30,8 +37,17 @@ async def run():
         activities.register(HelpCommandActivity(bdk.messages()))
         activities.register(SalesCommandActivity(bdk.messages()))
         activities.register(SupportCommandActivity(bdk.messages()))
+        call_approval_registry = CallApprovalRegistry()
+        activities.register(CallApprovalCommandActivity(bdk.messages(), call_approval_registry))
+        activities.register(CallApprovalFormReplyActivity(bdk.messages(), call_approval_registry))
         activities.register(LookupCommandActivity(bdk.messages()))
         activities.register(LookupFormReplyActivity(bdk.messages()))
+
+        ticket_registry = TicketRegistry()
+        ticket_command = TicketCommandActivity(bdk.messages(), ticket_registry)
+        activities.register(ticket_command)
+        activities.register(TicketFormReplyActivity(bdk.messages(), ticket_registry, ticket_command))
+        activities.register(TicketHelpFormReplyActivity(bdk.messages(), bdk.streams(), ticket_registry, ticket_command))
 
         # Handle potential connection requests received while the bot was offline (at bootstrap)
         connections = await bdk.connections().list_connections(status=ConnectionStatus.PENDING_INCOMING)
